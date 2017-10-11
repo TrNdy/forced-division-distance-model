@@ -217,7 +217,7 @@ We add constraints to ensure that at most one \vaetid can be active, effectively
 \end{equation}
 %
 %
-\TP{TODO: Constraints~\eqref{eq:atmostoneamdelta},~\eqref{eq:atmostoneaedelta} should be ensured by other constraints, so we do not have to add them explicitly. Find out whether and where this happens.}
+\TP{TODO: Constraints~\eqref{eq:atmostoneamdelta} and~\eqref{eq:atmostoneaedelta} should be ensured by other constraints, so we do not have to add them explicitly. Find out whether and where this happens.}
 %
 %
 %
@@ -328,7 +328,7 @@ That is,
 	= \begin{Bmatrix*}[l]
 			\; \vamd{t}{j}{i}{\delta}   & \forall j, \\[4mm]
 			\; \vad{t}{i}{jk}           & \forall j, k \text{, if } \delta = \Delta,\; \\[4mm]
-			\; \vae{t}{i} & 
+			\; \vaed{t}{i}{\delta} & 
 		\end{Bmatrix*}.
 \end{equation}
 %
@@ -350,18 +350,16 @@ Lacking any contrary information, we assign maximum division distance $\Delta$ t
 %
 Considering the costs and constraints defined above it can be seen that segmentation variables are redundant in the formulation of the factor graph.
 The continuity equality~\eqref{eq:contexit} provides a definition for each segmentation variable in terms of a sum over a set of assignment variables.
-Plugging these definitions into \eqref{eq:treeconstraints}, and replacing \eqref{eq:contenter} and \eqref{eq:contexit} by
+Plugging these definitions into \eqref{eq:treeconstraints}\TP{TODO: What about the last timepoint? How was this handled in MM}, and replacing \eqref{eq:contenter} and \eqref{eq:contexit} by
 \begin{equation}
-  \forall t \in \set{2, \dots, T-1},\;
-%  \forall t \in (1, T):
-  \forall \vht \in \Ht:
+  \forall\, 1 < t < T,\; 0 \le \delta \le \Delta,\; \vht \in \Ht:
     \!\!\!\!\!
-    \sum_{\vat[t-1] \in \Gl{\vht}}
+    \sum_{\vat[t-1] \in \Gl{\vhtd{\delta}}}
     \!\!\!\!\!
       \vat[t-1]
   -
     \!\!\!\!\!
-    \sum_{\vat \in \Gr{\vht}}
+    \sum_{\vat \in \Gr{\vhtd{\delta}}}
     \!\!\!\!\!
       \vat = 0
 \end{equation}
