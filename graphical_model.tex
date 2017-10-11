@@ -1,0 +1,379 @@
+\documentclass[a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{mathtools}
+%\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{xspace}
+\usepackage[usenames,dvipsnames]{color}
+
+
+
+
+%%%% macros %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\FJ}[1]{{\color{Cyan}\sc \textbf{FJ:} #1}{}}
+\newcommand{\TP}[1]{{\color{Red}\sc \textbf{TP:} #1}{}}
+
+
+ 
+\newcommand{\set}[1]{\ensuremath{\{#1\}}}
+
+% the set of integers (Z)
+\newcommand{\Int}{\ensuremath{\mathbb{Z}}}
+
+
+% segmentation hypotheses  - - - - - - - - - - - - - - - - - - - - - - - - - - 
+\newcommand{\hypset}[1]{\ensuremath{H^{(#1)}}\xspace}
+\newcommand{\Hypt}{\hypset{t}}
+
+\newcommand{\hyp}[1][]{\ensuremath{h_{#1}}\xspace}
+\newcommand{\hypt}[1][t]{\ensuremath{h^{(#1)}}\xspace}
+\newcommand{\hypti}[2][t]{\ensuremath{h^{(#1)}_{#2}}\xspace}
+
+% segmentation variables - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+\newcommand{\vhset}[1]{\hypset{#1}}
+\newcommand{\Ht}[1][t]{\vhset{#1}}
+
+\newcommand{\vh}[1][]{\ensuremath{h_{#1}}\xspace}
+\newcommand{\vht}[1][t]{\ensuremath{h^{(#1)}}\xspace}
+\newcommand{\vhtd}[2][t]{\ensuremath{h^{(#1)}\left({#2}\right)}\xspace}
+\newcommand{\vhti}[2][t]{\ensuremath{h^{(#1)}_{#2}}\xspace}
+\newcommand{\vhtid}[3][t]{\ensuremath{h^{(#1)}_{#2}\left({#3}\right)}\xspace}
+
+% set of root-to-leaf paths
+\newcommand{\Paths}[1]{\ensuremath{\mathcal{P}(#1)}\xspace}
+\newcommand{\Path}{\ensuremath{\pi}\xspace}
+
+% assignment variables - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+\newcommand{\vaset}[1]{\ensuremath{A^{(#1)}}\xspace}
+\newcommand{\At}[1][t]{\vaset{#1}}
+
+\newcommand{\va}[1][]{\ensuremath{a_{#1}}\xspace}
+\newcommand{\vat}[1][t]{\ensuremath{a^{(#1)}}\xspace}
+\newcommand{\vati}[2][t]{\ensuremath{a^{(#1)}_{#2}}\xspace}
+
+% mapping
+\newcommand{\vamset}[1]{\ensuremath{A^{(#1)}_{\mapsto}}\xspace}
+\newcommand{\Amt}[1][t]{\vamset{#1}}
+\newcommand{\vam}[3]{\ensuremath{a^{(#1)}_{#2\mapsto#3}}\xspace}
+\newcommand{\vamd}[4]{\ensuremath{a^{(#1)}_{#2\mapsto#3}\left(#4\right)}\xspace}
+
+% division
+\newcommand{\vadset}[1]{\ensuremath{A^{(#1)}_{\div}}\xspace}
+\newcommand{\Adt}[1][t]{\vadset{#1}}
+\newcommand{\vad}[3]{\ensuremath{a^{(#1)}_{#2\div#3}}\xspace}
+
+% appearance
+\newcommand{\vaaset}[1]{\ensuremath{A^{(#1)}_{\div}}\xspace}
+\newcommand{\Aat}[1][t]{\vaaset{#1}}
+\newcommand{\vaa}[2]{\ensuremath{a^{(#1)}_{\nearrow#2}}\xspace}
+
+% disappearance (exit)
+\newcommand{\vaeset}[1]{\ensuremath{A^{(#1)}_{\searrow}}\xspace}
+\newcommand{\Aet}[1][t]{\vaeset{#1}}
+\newcommand{\vae}[2]{\ensuremath{a^{(#1)}_{#2\searrow}}\xspace}
+\newcommand{\vaed}[3]{\ensuremath{a^{(#1)}_{#2\searrow}\left(#3\right)}\xspace}
+
+% assignment sets
+\newcommand{\Gr}[1]{\ensuremath{\Gamma_{\text{R}}\left(#1\right)}\xspace}
+\newcommand{\Gl}[1]{\ensuremath{\Gamma_{\text{L}}\left(#1\right)}\xspace}
+\newcommand{\Aup}[1]{\ensuremath{A_\uparrow(#1)}\xspace}
+
+% factor graph - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+\newcommand{\FGV}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\FGVH}{\ensuremath{\mathcal{H}}\xspace}
+\newcommand{\FGVA}{\ensuremath{\mathcal{A}}\xspace}
+
+\newcommand{\FGF}{\ensuremath{\mathcal{F}}\xspace}
+\newcommand{\FGE}{\ensuremath{\mathcal{E}}\xspace}
+
+% abbreviations  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+\newcommand{\Ie}{I.e.{}}
+\newcommand{\Eg}{E.g.{}}
+\newcommand{\Cf}{Cf.{}}
+\newcommand{\ie}{i.e.{}}
+\newcommand{\eg}{e.g.{}}
+\newcommand{\cf}{cf.{}}
+\newcommand{\etc}{etc\xspace}
+\newcommand{\etal}{\emph{et~al.}}
+
+
+
+
+
+
+
+
+
+\begin{document}
+
+\title{Cell Tracking With Forced Division Distance}
+\author{Tobias Pietzsch, Florian Jug}
+\maketitle
+
+
+
+We use a \emph{factor graph} $\mathcal{FG} = (\FGV, \FGF, \FGE)$ with
+\FGV being a set of binary variables or \emph{variable nodes},
+\FGF being a set of factors or \emph{factor nodes}, and
+$\FGE \subset \FGV \times \FGF$~\cite{Frey:1997p3532}.
+%
+%
+\section{Variable nodes.}
+%
+%
+The variable nodes $\FGV = \FGVH\, \cup\, \FGVA$ comprise
+\begin{itemize}
+\item \emph{segmentation variables} $\FGVH = \bigcup_{t=1}^T \Ht$, and 
+\item \emph{assignment variables} $\FGVA = \bigcup_{t=1}^{T-1} \At$.
+\end{itemize}
+
+%
+\subsection{Segmentation variables}
+%----------------------------------
+Each binary segmentation variable $\vht \in \Ht$ indicates whether a particular segment hypothesis at time-point $t$ is choosen as part of the solution.\footnote{%
+  To keep notation simple, we will use \vht to denote both, the binary segmentation variable and the corresponding segment hypothesis.
+  Likewise, \Ht denotes the set of segmentation variables as well as the set of segment hypotheses, at time-point $t$.}
+
+%
+\subsection{Assignment variables}
+%--------------------------------
+Assignment variables $\vat \in \At$ link segment hypotheses at time-point $t$ to segment hypotheses at time-point $t+1$.
+We distinguish three types of assignment variables.
+%
+\paragraph{Mapping assignments:}
+A mapping assignment \vam{t}{i}{j} connects two segment hypotheses \vhti{i} and \vhti[t+1]{j}.
+It indicates that these segments correspond to the same segmented cell that is tracked between time-points $t$ and $t+1$.
+%
+\paragraph{Division assignments:}
+A division assignment \vad{t}{i}{jk} connects segment hypothesis \vhti{i} to \vhti[t+1]{j} and \vhti[t+1]{k}.
+It indicates that these segments correspond to a cell division event, where one segmented cell at time-point $t$ divides into two daughter cells at $t+1$.
+%
+\paragraph{Appearance assignments:}
+An appearance assignment \vaa{t}{i} is connected to one segment hypothesis \vhti[t+1]{i}. It indicates that this segment appears (enters the field of view) at time-point $(t+1)$. Note, that we annotate the assignment with time index $(t)$ although it concerns only hypotheses at $(t+1)$. This will be convenient later because all ``incoming'' assignments into $(t+1)$ have time index $(t)$.
+%
+\paragraph{Disappearance assignments:}
+An disappearance (exit) assignment \vae{t}{i} is only connected to one segment hypothesis \vhti{i}. It indicates that this segment corresponds to a segmented cell at time-point $t$ that disappears (leaves the field of view) at time-point $t+1$.
+
+%
+\subsection{Division distance augmentation}
+%------------------------------------------
+\subsubsection{Segmentation variables}
+%
+To encode distance to last division, we replace each binary segmentation variable \vht by a vector of binary variables \vhtd{\delta} where $\delta\in\set{0,\dots,\Delta}$ denotes the number of time-points since the last division (clamped at $\Delta$).
+
+We use \vht to denote the sum
+\begin{equation}
+	\vht = \sum_{0 \leq \delta \leq \Delta} \vhtd{\delta}.
+\end{equation}
+We add constraints to ensure that at most one \vhtd{\delta} can be active, effectively ensuring that $\vht$ can be treated as a binary variable.
+\begin{equation}\label{eq:atmostonehdelta}
+  \forall t \in \set{1, \dots, T},\;
+  \forall \vht \in \Ht:
+		\sum_{0 \leq \delta \leq \Delta} \vhtd{\delta}
+  	\leq 1
+\end{equation}
+We take the liberty to write $\vht \in \Ht$ where it would be more accurate to write $\vht \subset \Ht$.
+
+
+\subsubsection{Assignment variables}
+%
+\newcommand{\vamtij}{\vam{t}{i}{j}}
+\newcommand{\vamtijd}[1][\delta]{\vamd{t}{i}{j}{#1}}
+We replace each binary mapping variable \vamtij by a vector of binary variables \vamtijd where $\delta\in\set{0,\dots,\Delta}$ denotes the number of time-points since the last division (clamped at $\Delta$) at the start of the mapping.
+
+Specifically, mapping assignment \vamtijd connects the two segment hypotheses \vhtid{i}{\delta} and \vhtid[t+1]{j}{\delta+1} (clamping at $\Delta$).
+
+We use \vamtij to denote the sum
+\begin{equation}
+	\vamtij = \sum_{0 \leq \delta \leq \Delta} \vamtijd.
+\end{equation}
+We add constraints to ensure that at most one \vamtijd can be active, effectively ensuring that \vamtij can be treated as a binary variable.
+\begin{equation}\label{eq:atmostoneamdelta}
+  \forall t \in \set{1, \dots, T},\;
+  \forall \vamtij \in \Amt:
+		\sum_{0 \leq \delta \leq \Delta} \vamtijd
+  	\leq 1
+\end{equation}
+%
+
+\newcommand{\vaeti}{\vae{t}{i}}
+\newcommand{\vaetid}[1][\delta]{\vaed{t}{i}{#1}}
+\noindent
+Similarly, we replace each disappearance assignment \vaeti by a vector of binary variables \vaetid where $\delta\in\set{0,\dots,\Delta}$ denotes the number of time-points since the last division (clamped at $\Delta$) of the exiting hypothesis \vhtid{i}{\delta}.
+
+We use \vaeti to denote the sum
+\begin{equation}
+	\vaeti = \sum_{0 \leq \delta \leq \Delta} \vaetid.
+\end{equation}
+We add constraints to ensure that at most one \vaetid can be active, effectively ensuring that \vaeti can be treated as a binary variable.
+\begin{equation}\label{eq:atmostoneaedelta}
+  \forall t \in \set{1, \dots, T},\;
+  \forall \vaeti \in \Amt:
+		\sum_{0 \leq \delta \leq \Delta} \vaetid
+  	\leq 1
+\end{equation}
+%
+%
+\TP{TODO: Constraints~\eqref{eq:atmostoneamdelta},~\eqref{eq:atmostoneaedelta} should be ensured by other constraints, so we do not have to add them explicitly. Find out whether and where this happens.}
+%
+%
+%
+\section{Factor nodes.}
+%
+%
+Factor nodes connect to one or more variable nodes, assigning a potential to each joint configuration of these variables.
+The factor nodes \FGF comprise unary factors and higher order factors.
+Unary factors $f(v)$ are connected to each binary variable $v \in \FGV$, capturing the plausibility that $v$ is active given the data. Formally we define
+\begin{equation}
+  -\ln f(v) = \begin{cases}
+    0    & \text{if } v = 0 \\
+    c_v  & \text{if } v = 1,
+  \end{cases}
+\end{equation}
+$c_{v}$ is the cost for including the respective segmentation or assignment variable in the solution.
+These costs are derived from (image) features as described in the next subsection.
+
+Structural constraints are expressed as $n$-ary factors
+\begin{equation}
+  -\ln f(var(E)) = \begin{cases}
+    0    & \text{if $E$ holds} \\
+    \infty & \text{otherwise,}
+  \end{cases}
+\end{equation}
+where $E$ are (in-)equalities on the set of variables $var(E)$ connected to the factor.
+The constraints formalized by these (in-)equalities prohibit
+  solutions involving conflicting segmentation hypotheses or assignments that are inconsistent with the selected segmentation.\footnote{%
+  Such inconsistent solutions correspond to events with infinite costs or $0$ probability.}
+Constraints are described in Section~\ref{sec:constraints}.
+
+
+%
+%
+\subsection{Costs.}
+\label{sec:segcosts}
+%
+%
+All costs $c_v$ corresponding to activating a variables $v$ are defined according to the following considerations.
+
+\TP{TODO}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+\subsection{Constraints}
+\label{sec:constraints}
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+%
+%
+\subsubsection{Tree constraints.}
+%
+%
+\TP{TODO: Revise for general conflict graph constraints. Singleton hypothesis constraints need to be added because they will ensure~\eqref{eq:atmostonehdelta}.}
+
+We say that segment hypotheses $\hypti{i} \supset \hypti{j}$ are conflicting because they offer mutually exclusive interpretations of (parts of) the image data.
+Tree constraints enforce that conflicting segment variables cannot be simultaneously active.
+This is formalized in the set of inequalities
+\begin{equation}\label{eq:treeconstraints}
+  \forall t \in \set{1, \dots, T},\;
+  \forall \Path \in \Paths{\Ht}:
+  \sum_{\vht \in \Path} \vht \leq 1
+\end{equation}
+where \Paths{\Ht} is the set of all paths \Path from the root node in $(\Hypt,\supset)$ to any of its leaf nodes.
+%
+%
+\subsubsection{Continuity constraints.}
+%
+%
+Continuity constraints enforce consistency between segmentation and assignment variables.
+If a segment hypothesis is selected,
+   exactly one of the assignments entering it from the previous time-point,
+   and exactly one of the assignments leaving it towards the next time-point must be selected as well.
+If a segment hypothesis is not selected, neither must any of these assignments be selected.
+This is formalized as the following sets of constraints.
+For the entering assignments we have
+\begin{equation}\label{eq:contenter}
+  \forall\, 1 < t \le T,\;
+  0 \le \delta \le \Delta,\;
+  \vht \in \Ht:
+    \sum_{\vat[t-1] \in \Gl{\vhtd{\delta}}} \vat[t-1]
+  = \vhtd{\delta}
+\end{equation}
+where the \emph{left neighborhood} \Gl{\vh} is the set of all assignments entering \vh from the previous time-point.
+That is,
+\begin{equation}
+	\Gl{\vhtid{i}{\delta}}
+	= \begin{Bmatrix*}[l]
+			\; \vamd{t-1}{j}{i}{\delta-1}            & \forall j \text{, if } \delta \ge 1, \\[4mm]
+			\; \vad{t-1}{j}{ik},\; \vad{t-1}{j}{ki}  & \forall j, k \text{, if } \delta = 0,\; \\[4mm]
+			\; \vaa{t-1}{i}                          & \text{if } \delta = \Delta, \\[4mm]
+			\; \vamd{t-1}{j}{i}{\Delta}              & \text{if } \delta = \Delta
+		\end{Bmatrix*}.
+\end{equation}
+%
+
+\noindent
+Similarly, for the assignments leaving to the next time-point we have
+\begin{equation}\label{eq:contexit}
+  \forall\, 1 \le t < T,\;
+  0 \le \delta \le \Delta,\;
+  \vht \in \Ht:
+    \sum_{\vat \in \Gr{\vhtd{\delta}}} \vat
+  = \vhtd{\delta}
+\end{equation}
+where the \emph{right neighborhood} \Gr{\vh} is the set of all assignments leaving \vh to the next time-point.
+That is,
+\begin{equation}
+	\Gr{\vhtid{i}{\delta}}
+	= \begin{Bmatrix*}[l]
+			\; \vamd{t}{j}{i}{\delta}   & \forall j, \\[4mm]
+			\; \vad{t}{i}{jk}           & \forall j, k \text{, if } \delta = \Delta,\; \\[4mm]
+			\; \vae{t}{i} & 
+		\end{Bmatrix*}.
+\end{equation}
+%
+%
+\subsubsection{Initialisation constraints.}
+%
+%
+Lacking any contrary information, we assign maximum division distance $\Delta$ to all (selected) segment hypothesis in time-point $t = 1$. This is realised by forcing all other segmentation variables to $0$.
+\begin{equation}
+	\forall\, 0 \le \delta < \Delta,\; \vht[1] \in \Ht[1]\;:\; \vhtd[1]{\delta} = 0
+\end{equation}
+
+%
+%
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+\subsection{Eliminating segmentation variables}
+\label{sec:varelim}
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
+%
+Considering the costs and constraints defined above it can be seen that segmentation variables are redundant in the formulation of the factor graph.
+The continuity equality~\eqref{eq:contexit} provides a definition for each segmentation variable in terms of a sum over a set of assignment variables.
+Plugging these definitions into \eqref{eq:treeconstraints}, and replacing \eqref{eq:contenter} and \eqref{eq:contexit} by
+\begin{equation}
+  \forall t \in \set{2, \dots, T-1},\;
+%  \forall t \in (1, T):
+  \forall \vht \in \Ht:
+    \!\!\!\!\!
+    \sum_{\vat[t-1] \in \Gl{\vht}}
+    \!\!\!\!\!
+      \vat[t-1]
+  -
+    \!\!\!\!\!
+    \sum_{\vat \in \Gr{\vht}}
+    \!\!\!\!\!
+      \vat = 0
+\end{equation}
+we can eliminate segmentation variables from the constraints.\footnote{%
+One might fear that by replacing \vh by a sum over assignment variables we might lose the restriction that \vh is binary, \ie, that at most one of the
+  assignments leaving \vh can be active.
+Note, however, that this is now effectively ensured by the tree constraints~\eqref{eq:treeconstraints} (with \vht replaced).}
+
+Similarly, the costs $c_{\vh}$ can be dropped, and added to the cost of each exiting assigment $c_{\va}$, where the constraints guarantee that at most one of these is active.\footnote{%
+The costs of segmentation hypotheses \vht[T], which have no exiting assignments, are added to each entering assignment instead.}
+
+
+\end{document}
+
+% vim::set expandtab tabstop=4 softtabstop=2 shiftwidth=2 ft=tex:
