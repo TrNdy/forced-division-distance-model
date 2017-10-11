@@ -1,0 +1,11 @@
+/*.aux
+/*.bbl
+/*.log
+/*.fdb_latexmk
+/*.blg
+/*.fls
+/*.synctex.gz
+/*.pdf
+/*.spl
+*.dep
+*.dat
