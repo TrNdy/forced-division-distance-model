@@ -343,37 +343,6 @@ Lacking any contrary information, we assign maximum division distance $\Delta$ t
 		\vhtd[1]{\delta} = 0
 \end{equation}
 
-%
-%
-% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-\subsection{Eliminating segmentation variables}
-\label{sec:varelim}
-% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
-%
-Considering the costs and constraints defined above it can be seen that segmentation variables are redundant in the formulation of the factor graph.
-The continuity equality~\eqref{eq:contexit} provides a definition for each segmentation variable in terms of a sum over a set of assignment variables.
-Plugging these definitions into \eqref{eq:treeconstraints}\TP{TODO: What about the last timepoint? How was this handled in MM}, and replacing \eqref{eq:contenter} and \eqref{eq:contexit} by
-\begin{equation}
-  \forall\, 1 < t < T,\; 0 \le \delta \le \Delta,\; \vht \in \Ht:
-    \!\!\!\!\!
-    \sum_{\vat[t-1] \in \Gl{\vhtd{\delta}}}
-    \!\!\!\!\!
-      \vat[t-1]
-  -
-    \!\!\!\!\!
-    \sum_{\vat \in \Gr{\vhtd{\delta}}}
-    \!\!\!\!\!
-      \vat = 0
-\end{equation}
-we can eliminate segmentation variables from the constraints.\footnote{%
-One might fear that by replacing \vh by a sum over assignment variables we might lose the restriction that \vh is binary, \ie, that at most one of the
-  assignments leaving \vh can be active.
-Note, however, that this is now effectively ensured by the tree constraints~\eqref{eq:treeconstraints} (with \vht replaced).}
-
-Similarly, the costs $c_{\vh}$ can be dropped, and added to the cost of each exiting assigment $c_{\va}$, where the constraints guarantee that at most one of these is active.\footnote{%
-The costs of segmentation hypotheses \vht[T], which have no exiting assignments, are added to each entering assignment instead.}
-
-
 \end{document}
 
 % vim::set expandtab tabstop=4 softtabstop=2 shiftwidth=2 ft=tex:
