@@ -193,7 +193,7 @@ We use \vamtij to denote the sum
 We add constraints to ensure that at most one \vamtijd can be active, effectively ensuring that \vamtij can be treated as a binary variable.
 \begin{equation}\label{eq:atmostoneamdelta}
   \forall t \in \set{1, \dots, T},\;
-  \forall \vamtij \in \Amt:
+  \forall \vamtij \in \At:
 		\sum_{0 \leq \delta \leq \Delta} \vamtijd
   	\leq 1
 \end{equation}
@@ -211,7 +211,7 @@ We use \vaeti to denote the sum
 We add constraints to ensure that at most one \vaetid can be active, effectively ensuring that \vaeti can be treated as a binary variable.
 \begin{equation}\label{eq:atmostoneaedelta}
   \forall t \in \set{1, \dots, T},\;
-  \forall \vaeti \in \Amt:
+  \forall \vaeti \in \At:
 		\sum_{0 \leq \delta \leq \Delta} \vaetid
   	\leq 1
 \end{equation}
@@ -293,9 +293,9 @@ If a segment hypothesis is not selected, neither must any of these assignments b
 This is formalized as the following sets of constraints.
 For the entering assignments we have
 \begin{equation}\label{eq:contenter}
-  \forall\, 1 < t \le T,\;
-  0 \le \delta \le \Delta,\;
-  \vht \in \Ht:
+  \forall t \in \set{2, \dots, T},\;
+  \forall \delta \in \set{0,\dots,\Delta},\;
+  \forall \vht \in \Ht:
     \sum_{\vat[t-1] \in \Gl{\vhtd{\delta}}} \vat[t-1]
   = \vhtd{\delta}
 \end{equation}
@@ -315,9 +315,9 @@ That is,
 \noindent
 Similarly, for the assignments leaving to the next time-point we have
 \begin{equation}\label{eq:contexit}
-  \forall\, 1 \le t < T,\;
-  0 \le \delta \le \Delta,\;
-  \vht \in \Ht:
+  \forall t \in \set{1, \dots, T-1},\;
+  \forall \delta \in \set{0,\dots,\Delta},\;
+  \forall \vht \in \Ht:
     \sum_{\vat \in \Gr{\vhtd{\delta}}} \vat
   = \vhtd{\delta}
 \end{equation}
@@ -326,7 +326,7 @@ That is,
 \begin{equation}
 	\Gr{\vhtid{i}{\delta}}
 	= \begin{Bmatrix*}[l]
-			\; \vamd{t}{j}{i}{\delta}   & \forall j, \\[4mm]
+			\; \vamd{t}{i}{j}{\delta}   & \forall j, \\[4mm]
 			\; \vad{t}{i}{jk}           & \forall j, k \text{, if } \delta = \Delta,\; \\[4mm]
 			\; \vaed{t}{i}{\delta} & 
 		\end{Bmatrix*}.
@@ -338,7 +338,9 @@ That is,
 %
 Lacking any contrary information, we assign maximum division distance $\Delta$ to all (selected) segment hypothesis in time-point $t = 1$. This is realised by forcing all other segmentation variables to $0$.
 \begin{equation}
-	\forall\, 0 \le \delta < \Delta,\; \vht[1] \in \Ht[1]\;:\; \vhtd[1]{\delta} = 0
+	\forall \delta \in \set{0,\dots,\Delta-1},\;
+	\forall \vht[1] \in \Ht[1]:
+		\vhtd[1]{\delta} = 0
 \end{equation}
 
 %
